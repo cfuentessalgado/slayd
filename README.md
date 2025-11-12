@@ -7,6 +7,8 @@ A simple, YAML-based presentation framework that compiles to beautiful HTML slid
 - Write presentations in clean, readable YAML
 - Multiple slide types (hero, two-column, grid, code, timeline, table, etc.)
 - Two built-in themes (dark and light)
+- Syntax highlighting for code with Prism.js (One Dark theme by default)
+- Multiple slide transitions (fade, slide, zoom)
 - Keyboard navigation (arrow keys)
 - Progress bar
 - Simple markdown-like formatting
@@ -40,6 +42,7 @@ slayd init my-talk.yaml
 Or create a `my-talk.yaml` file manually:
 
 ```yaml
+# yaml-language-server: $schema=./schema.json
 title: "My Presentation"
 theme: light  # or omit for dark theme
 
@@ -57,6 +60,38 @@ slayd my-talk.yaml
 ```
 
 This creates `my-talk.html` that you can open in any browser!
+
+## Editor Support
+
+### Autocomplete & Validation (VS Code)
+
+Slayd includes a JSON Schema for autocomplete and validation. To enable it, add this comment at the top of your YAML file:
+
+```yaml
+# yaml-language-server: $schema=./schema.json
+```
+
+If you installed Slayd globally, use the full path:
+
+```yaml
+# yaml-language-server: $schema=/path/to/slayd/schema.json
+```
+
+Or reference it from a URL if hosted:
+
+```yaml
+# yaml-language-server: $schema=https://yourdomain.com/schema.json
+```
+
+**Benefits:**
+- Autocomplete for slide types and properties
+- Validation of property values (e.g., transition effects, themes)
+- Inline documentation
+- Error detection before building
+
+**Requirements:**
+- VS Code with the [YAML extension](https://marketplace.visualstudio.com/items?itemName=redhat.vscode-yaml)
+- Or any editor that supports YAML Language Server
 
 ## Commands
 
@@ -194,12 +229,13 @@ Show multiple items in a grid (2, 3, or 4 columns).
 ```
 
 ### Code Slide
-Display code with syntax.
+Display code with syntax highlighting.
 
 ```yaml
 - type: code
   title: "Example Code"
   description: "Optional description"
+  language: javascript  # javascript, python, typescript, bash, json, yaml, css, go, rust, java, html
   code: |
     const x = 42;
     console.log(x);
@@ -330,15 +366,29 @@ content:
 ```yaml
 content:
   - type: code
+    language: javascript  # optional, defaults to javascript
     code: |
       function example() {
         return true;
       }
 ```
 
+Or use inline code blocks with markdown syntax:
+````yaml
+content:
+  - |
+    Here is some code:
+    ```javascript
+    const greeting = "Hello World";
+    console.log(greeting);
+    ```
+````
+
 ## Themes
 
-### Dark Theme (default)
+### Presentation Themes
+
+#### Dark Theme (default)
 Omit the `theme` property or set it to empty:
 
 ```yaml
@@ -346,19 +396,46 @@ title: "My Presentation"
 # No theme property = dark theme
 ```
 
-### Light Theme
+#### Light Theme
 ```yaml
 title: "My Presentation"
 theme: light
 ```
 
-### Custom Theme
+#### Custom Theme
 Create your own CSS file and reference it:
 
 ```yaml
 title: "My Presentation"
 theme: my-custom-theme  # loads my-custom-theme.css
 ```
+
+### Code Syntax Themes
+
+Slayd uses Prism.js for syntax highlighting. The default theme is **One Dark** (Atom's popular dark theme).
+
+#### Available Code Themes
+
+```yaml
+title: "My Presentation"
+codeTheme: prism-one-dark  # Default - Atom's One Dark theme (included locally)
+
+# Or choose from CDN themes:
+# codeTheme: prism-tomorrow     # Tomorrow Night
+# codeTheme: prism-okaidia      # Okaidia
+# codeTheme: prism-twilight     # Twilight
+# codeTheme: prism-solarizedlight  # Solarized Light
+```
+
+#### Custom Code Theme
+Create your own Prism theme CSS file:
+
+```yaml
+title: "My Presentation"
+codeTheme: my-prism-theme  # loads my-prism-theme.css if it exists locally
+```
+
+**Note:** The builder will first check for a local theme file (e.g., `prism-one-dark.css`), then fall back to loading from the Prism.js CDN if not found locally.
 
 ## Full Example
 
@@ -383,6 +460,8 @@ slayd/
 ├── builder.js           # The compiler
 ├── presentation.css     # Dark theme styles
 ├── light.css           # Light theme styles
+├── prism-one-dark.css  # One Dark syntax theme for code
+├── schema.json         # JSON Schema for YAML validation
 ├── example.yaml        # Full example presentation
 ├── my-talk.yaml        # Your presentation (you create this)
 └── my-talk.html        # Generated output (auto-created)
@@ -416,16 +495,56 @@ To convert your existing HTML presentations to YAML:
 3. Extract the content into YAML format
 4. Build and compare
 
+## Transitions
+
+Control slide transitions globally or per-slide:
+
+### Global Transitions
+```yaml
+title: "My Presentation"
+transition: fade  # Options: fade, slide-left, slide-right, slide-up, slide-down, zoom, none
+
+slides:
+  - type: hero
+    title: "Welcome"
+```
+
+### Per-Slide Transitions
+Override the global transition for specific slides:
+
+```yaml
+title: "My Presentation"
+transition: fade  # Default for all slides
+
+slides:
+  - type: hero
+    title: "Welcome"
+    transition: zoom  # This slide uses zoom instead
+  
+  - type: default
+    title: "Next Slide"
+    transition: slide-left  # This slide slides in from the left
+```
+
+**Available transitions:**
+- `fade` - Fade in (default)
+- `slide-left` - Slide in from right
+- `slide-right` - Slide in from left
+- `slide-up` - Slide in from bottom
+- `slide-down` - Slide in from top
+- `zoom` - Zoom in effect
+- `none` - No transition
+
 ## Roadmap
 
 Potential future features:
 - [ ] Speaker notes
-- [ ] Slide transitions
 - [ ] Export to PDF
 - [ ] Live reload during development
 - [ ] More themes
 - [ ] Image optimization
-- [ ] Syntax highlighting for code blocks
+- [x] Syntax highlighting for code blocks
+- [x] Slide transitions
 
 ## License
 
