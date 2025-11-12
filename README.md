@@ -384,7 +384,7 @@ content:
     ```
 ````
 
-## Themes
+### Content Types
 
 ### Presentation Themes
 

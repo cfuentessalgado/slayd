@@ -1,3 +1,4 @@
+# yaml-language-server: $schema=./schema.json
 # Example Presentation using YAML
 # This demonstrates all available slide types and features
 
@@ -5,6 +6,7 @@ title: "My Awesome Presentation"
 lang: es
 theme: light  # or leave empty for dark theme
 transition: fade  # Global transition: fade, slide-left, slide-right, slide-up, slide-down, zoom, none
+codeTheme: prism-one-dark
 
 slides:
   # Hero slide - perfect for title/intro
@@ -19,7 +21,7 @@ slides:
   - type: image
     preset: center
     title: "Our Amazing Team"
-    image: "img/team-photo.png"
+    image: "https://random.dog/252beeb3-e79c-4bb5-9f91-ce51e5a454f1.jpg"
     alt: "Team photo"
     caption: "The team that makes it all happen"
     transition: slide-left
@@ -105,6 +107,7 @@ slides:
   - type: code
     title: "Quick Example"
     description: "Here's how easy it is to use"
+    language: javascript
     code: |
       function hello() {
         console.log('Hello World!');
@@ -112,6 +115,103 @@ slides:
       
       hello();
     notes: "This is a simple example showing the **basic syntax**"
+
+  # Python code example
+  - type: code
+    title: "Python Example"
+    description: "Python with full syntax highlighting"
+    language: python
+    code: |
+      def calculate_fibonacci(n):
+          if n <= 1:
+              return n
+          return calculate_fibonacci(n-1) + calculate_fibonacci(n-2)
+      
+      # Print first 10 Fibonacci numbers
+      for i in range(10):
+          print(f"F({i}) = {calculate_fibonacci(i)}")
+    notes: "Supports Python, JavaScript, TypeScript, and more!"
+
+  # TypeScript code example
+  - type: code
+    title: "TypeScript Support"
+    description: "Strongly typed code"
+    language: typescript
+    code: |
+      interface User {
+        id: number;
+        name: string;
+        email: string;
+      }
+      
+      function greetUser(user: User): string {
+        return `Hello, ${user.name}!`;
+      }
+      
+      const user: User = {
+        id: 1,
+        name: "John",
+        email: "john@example.com"
+      };
+
+  # Bash script example
+  - type: code
+    title: "Shell Scripts"
+    description: "DevOps and automation"
+    language: bash
+    code: |
+      #!/bin/bash
+      
+      # Build and deploy script
+      echo "Building application..."
+      npm run build
+      
+      echo "Running tests..."
+      npm test
+      
+      if [ $? -eq 0 ]; then
+        echo "Deploying..."
+        git push origin main
+      fi
+
+  # JSON example
+  - type: code
+    title: "JSON Configuration"
+    language: json
+    code: |
+      {
+        "name": "my-app",
+        "version": "1.0.0",
+        "scripts": {
+          "start": "node server.js",
+          "test": "jest"
+        },
+        "dependencies": {
+          "express": "^4.18.0"
+        }
+      }
+
+  # Inline code in markdown
+  - type: default
+    title: "Inline Code Examples"
+    content:
+      - "Use `inline code` directly in text"
+      - "Or full code blocks with language specification:"
+      - |
+        ```go
+        package main
+
+        import "fmt"
+
+        func main() {
+        	fmt.Println("Hello, Go!")
+        }
+        ```
+      - type: list
+        items:
+          - "Supports 10+ languages"
+          - "Automatic syntax detection"
+          - "Clean, readable output"
 
   # Timeline slide
   - type: timeline
