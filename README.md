@@ -17,13 +17,13 @@ A simple, YAML-based presentation framework that compiles to beautiful HTML slid
 Install globally via npm:
 
 ```bash
-npm install -g slayd
+npm install -g @cfuentessalgado/slayd
 ```
 
 Or use locally in your project:
 
 ```bash
-npm install slayd
+npm install @cfuentessalgado/slayd
 npx slayd my-talk.yaml
 ```
 
