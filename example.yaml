@@ -4,6 +4,7 @@
 title: "My Awesome Presentation"
 lang: es
 theme: light  # or leave empty for dark theme
+transition: fade  # Global transition: fade, slide-left, slide-right, slide-up, slide-down, zoom, none
 
 slides:
   # Hero slide - perfect for title/intro
@@ -12,13 +13,16 @@ slides:
     subtitle: "A presentation about cool things"
     logo: "🚀"
     titleSize: "5rem"
+    transition: zoom
 
   # Image slide - for showing pictures
   - type: image
+    preset: center
     title: "Our Amazing Team"
     image: "img/team-photo.png"
     alt: "Team photo"
     caption: "The team that makes it all happen"
+    transition: slide-left
 
   # Default slide with mixed content
   - type: default
@@ -220,6 +224,52 @@ slides:
         - title: "Feature 4"
           content:
             - "Complete flexibility"
+
+  # Image preset examples
+  - type: default
+    title: "Image Presets Demo"
+    transition: slide-up
+    content:
+      - "Slayd now supports multiple image layouts:"
+      - type: list
+        style: blue
+        items:
+          - "**fullscreen** - Hero background images"
+          - "**split** - Side-by-side with content"
+          - "**icon** - Small centered logos"
+          - "**grid** - Multiple images at once"
+
+  # Fullscreen image preset
+  - type: image
+    preset: fullscreen
+    image: "https://random.dog/252beeb3-e79c-4bb5-9f91-ce51e5a454f1.jpg"
+    title: "Fullscreen Image"
+    caption: "Perfect for dramatic backgrounds"
+    transition: fade
+
+  # Split image preset
+  - type: image
+    preset: split
+    position: left
+    image: "https://random.dog/eae02902-719d-4b1f-b9b8-6cce2682f6a5.jpg"
+    title: "Split Layout"
+    transition: slide-right
+    content:
+      - "**Great for tutorials**"
+      - "Show an image alongside explanation"
+      - type: list
+        items:
+          - "Flexible positioning"
+          - "Rich content support"
+          - "Clean layout"
+
+  # Icon preset
+  - type: image
+    preset: icon
+    image: "https://random.dog/0356c15a-8874-4af3-a02a-ed0ae8d62b55.jpg"
+    title: "Icon Size"
+    caption: "Perfect for logos and small images"
+    transition: zoom
 
   # Final hero slide
   - type: hero

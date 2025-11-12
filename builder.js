@@ -34,8 +34,10 @@ function renderMarkdown(text) {
         .replace(/\n/g, '<br>');
 }
 
-function renderSlide(slide, index) {
+function renderSlide(slide, index, globalTransition) {
     const activeClass = index === 0 ? ' active' : '';
+    const transition = slide.transition || globalTransition || 'fade';
+    const transitionClass = transition !== 'none' ? ` transition-${transition}` : ' transition-none';
     let content = '';
     
     // Determine slide type and render accordingly
@@ -60,7 +62,7 @@ function renderSlide(slide, index) {
     }
     
     return `
-        <div class="slide${activeClass}">
+        <div class="slide${activeClass}${transitionClass}">
             ${content}
         </div>
     `;
@@ -79,8 +81,41 @@ function renderHeroSlide(slide) {
 }
 
 function renderImageSlide(slide) {
+    const preset = slide.preset || 'center';
+    
+    // Handle grid preset
+    if (preset === 'grid') {
+        const images = slide.images || [slide.image];
+        const gridClass = images.length === 3 ? 'grid-3' : images.length === 4 ? 'grid-4' : '';
+        return `
+            <div class="image-slide preset-grid ${gridClass}">
+                ${slide.title ? `<h1>${slide.title}</h1>` : ''}
+                <div class="image-grid">
+                    ${images.map(img => `<img src="${img}" alt="${slide.alt || 'Image'}">`).join('\n')}
+                </div>
+            </div>
+        `;
+    }
+    
+    // Handle split preset
+    if (preset === 'split') {
+        const position = slide.position || 'left';
+        return `
+            <div class="image-slide preset-split position-${position}">
+                <div class="split-image">
+                    <img src="${slide.image}" alt="${slide.alt || slide.title || 'Image'}">
+                </div>
+                <div class="split-content">
+                    ${slide.title ? `<h1>${slide.title}</h1>` : ''}
+                    ${slide.content ? renderContent(slide.content) : ''}
+                </div>
+            </div>
+        `;
+    }
+    
+    // Handle other presets (fullscreen, center, icon)
     return `
-        <div class="image-slide">
+        <div class="image-slide preset-${preset}">
             ${slide.title ? `<h1>${slide.title}</h1>` : ''}
             <img src="${slide.image}" alt="${slide.alt || slide.title || 'Image'}">
             ${slide.caption ? `<p style="margin-top: 1rem; color: #6b7280;">${renderMarkdown(slide.caption)}</p>` : ''}
@@ -322,7 +357,7 @@ function buildPresentation(yamlFile, outputFile) {
         const presentation = yaml.load(yamlContent);
         
         // Render all slides
-        const slidesHtml = presentation.slides.map((slide, index) => renderSlide(slide, index)).join('\n');
+        const slidesHtml = presentation.slides.map((slide, index) => renderSlide(slide, index, presentation.transition)).join('\n');
         
         // Build complete HTML
         const html = `<!DOCTYPE html>
@@ -410,6 +445,7 @@ function buildPresentation(yamlFile, outputFile) {
 function initPresentation(filename = 'presentation.yaml') {
     const templateContent = `title: "My Presentation"
 theme: light  # or leave empty for dark theme
+transition: fade  # Options: fade, slide-left, slide-right, slide-up, slide-down, zoom, none
 
 slides:
   # Title slide
@@ -417,12 +453,77 @@ slides:
     title: "Welcome"
     subtitle: "My first presentation with Slayd"
     logo: "🚀"
+    transition: zoom  # Override global transition for this slide
 
-  # Content slide
+  # Image Presets Demo
+  - type: default
+    title: "Image Presets"
+    transition: slide-left
+    content:
+      - "Slayd supports multiple image presets:"
+      - type: list
+        items:
+          - "**center** - Centered with padding (default)"
+          - "**fullscreen** - Full background with overlay text"
+          - "**split** - Side-by-side with content"
+          - "**icon** - Small centered image"
+          - "**grid** - Multiple images in a grid"
+
+  # Center preset (default)
+  - type: image
+    preset: center
+    image: "https://random.dog/967eae80-8f34-490b-944c-4f6bd4697712.jpeg"
+    title: "Center Preset"
+    caption: "Default centered image with padding"
+    transition: slide-up
+
+  # Fullscreen preset
+  - type: image
+    preset: fullscreen
+    image: "https://random.dog/c1efdc4c-5691-4823-9e66-fd9eeab3ce96.jpg"
+    title: "Fullscreen Preset"
+    caption: "Perfect for hero images"
+    transition: fade
+
+  # Split preset - left
+  - type: image
+    preset: split
+    position: left
+    image: "https://random.dog/a01a7df4-4529-4d52-b504-421e04733528.jpg"
+    title: "Split Layout"
+    transition: slide-right
+    content:
+      - "Image on one side, content on the other"
+      - type: list
+        items:
+          - "Great for explanations"
+          - "Can be left or right"
+          - "Flexible content area"
+
+  # Icon preset
+  - type: image
+    preset: icon
+    image: "https://random.dog/f856b11f-6d47-4089-9edf-aad8107161d0.jpg"
+    title: "Icon Preset"
+    caption: "Small centered image for logos"
+    transition: zoom
+
+  # Grid preset
+  - type: image
+    preset: grid
+    title: "Grid Preset"
+    transition: fade
+    images:
+      - "https://random.dog/2f7160d2-03fe-49cb-8a97-1d0611508746.jpg"
+      - "https://random.dog/4b7e6067-b030-490b-9b55-2bb7e38fb2fc.jpg"
+      - "https://random.dog/967eae80-8f34-490b-944c-4f6bd4697712.jpeg"
+      - "https://random.dog/c1efdc4c-5691-4823-9e66-fd9eeab3ce96.jpg"
+
+  # Regular content slide
   - type: default
     title: "About This Presentation"
+    transition: slide-down
     content:
-      - "This is a starter template"
       - "Edit this YAML file to create your slides"
       - type: list
         items:
@@ -433,6 +534,7 @@ slides:
   # Two-column slide
   - type: two-column
     title: "Features"
+    transition: slide-left
     left:
       title: "Easy"
       content:
@@ -449,6 +551,7 @@ slides:
     title: "Thank You!"
     subtitle: "Start editing to make it yours"
     logo: "✨"
+    transition: zoom
 `;
 
     try {
