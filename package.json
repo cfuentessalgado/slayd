@@ -10,6 +10,7 @@
     "builder.js",
     "presentation.css",
     "light.css",
+    "prism-one-dark.css",
     "example.yaml",
     "README.md"
   ],
