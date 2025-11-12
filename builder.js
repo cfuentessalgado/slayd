@@ -20,18 +20,30 @@ function escapeHtml(text) {
 function renderMarkdown(text) {
     if (!text) return '';
     
+    // Store code blocks temporarily to preserve newlines
+    const codeBlocks = [];
+    let textWithPlaceholders = text.replace(/```(\w+)?\n([\s\S]*?)```/g, (match, lang, code) => {
+        const language = lang || 'javascript';
+        const placeholder = `__CODE_BLOCK_${codeBlocks.length}__`;
+        codeBlocks.push(`<pre><code class="language-${language}">${escapeHtml(code.trim())}</code></pre>`);
+        return placeholder;
+    });
+    
     // Simple markdown-like rendering
-    return text
-        // Code blocks with language
-        .replace(/```(\w+)?\n([\s\S]*?)```/g, (match, lang, code) => {
-            return `<pre><code>${escapeHtml(code.trim())}</code></pre>`;
-        })
+    textWithPlaceholders = textWithPlaceholders
         // Inline code
         .replace(/`([^`]+)`/g, '<code>$1</code>')
         // Bold
         .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
         // Line breaks
         .replace(/\n/g, '<br>');
+    
+    // Restore code blocks with preserved newlines
+    codeBlocks.forEach((block, index) => {
+        textWithPlaceholders = textWithPlaceholders.replace(`__CODE_BLOCK_${index}__`, block);
+    });
+    
+    return textWithPlaceholders;
 }
 
 function renderSlide(slide, index, globalTransition) {
@@ -167,7 +179,8 @@ function renderContentItem(item) {
         return renderCard(item);
     }
     if (item.type === 'code') {
-        return `<pre><code>${escapeHtml(item.code)}</code></pre>`;
+        const language = item.language || 'javascript';
+        return `<pre><code class="language-${language}">${escapeHtml(item.code)}</code></pre>`;
     }
     if (item.type === 'quote') {
         return `<div class="quote">${renderMarkdown(item.text)}</div>`;
@@ -197,12 +210,13 @@ function renderGridSlide(slide) {
 }
 
 function renderCodeSlide(slide) {
+    const language = slide.language || 'javascript';
     return `
         ${slide.title ? `<h2>${slide.title}</h2>` : ''}
         ${slide.subtitle ? `<div class="subtitle">${renderMarkdown(slide.subtitle)}</div>` : ''}
         <div class="content">
             ${slide.description ? `<p style="color: #6b7280; margin-bottom: 1rem;">${renderMarkdown(slide.description)}</p>` : ''}
-            <pre><code>${escapeHtml(slide.code)}</code></pre>
+            <pre><code class="language-${language}">${escapeHtml(slide.code)}</code></pre>
             ${slide.notes ? `<div class="card" style="margin-top: 1rem;"><p style="color: #6b7280;">${renderMarkdown(slide.notes)}</p></div>` : ''}
         </div>
     `;
@@ -359,6 +373,13 @@ function buildPresentation(yamlFile, outputFile) {
         // Render all slides
         const slidesHtml = presentation.slides.map((slide, index) => renderSlide(slide, index, presentation.transition)).join('\n');
         
+        // Determine Prism theme - check for local file first, then fall back to CDN
+        const prismTheme = presentation.codeTheme || 'prism-one-dark';
+        const localPrismPath = `${prismTheme}.css`;
+        const prismThemeLink = fs.existsSync(localPrismPath)
+            ? `<link rel="stylesheet" href="${localPrismPath}">`
+            : `<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/${prismTheme}.min.css">`;
+        
         // Build complete HTML
         const html = `<!DOCTYPE html>
 <html lang="${presentation.lang || 'es'}">
@@ -368,6 +389,19 @@ function buildPresentation(yamlFile, outputFile) {
     <title>${presentation.title}</title>
     <link rel="stylesheet" href="presentation.css">
     ${presentation.theme ? `<link rel="stylesheet" href="${presentation.theme}.css">` : ''}
+    <!-- Prism.js for syntax highlighting -->
+    ${prismThemeLink}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-typescript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-yaml.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-css.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-go.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-rust.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
 </head>
 <body>
     <div class="progress-bar" id="progressBar"></div>
@@ -426,7 +460,9 @@ function buildPresentation(yamlFile, outputFile) {
             }
         });
 
+        // Initialize first slide and apply syntax highlighting
         showSlide(0);
+        Prism.highlightAll();
     </script>
 </body>
 </html>`;
@@ -443,7 +479,8 @@ function buildPresentation(yamlFile, outputFile) {
 }
 
 function initPresentation(filename = 'presentation.yaml') {
-    const templateContent = `title: "My Presentation"
+    const templateContent = `# yaml-language-server: $schema=./schema.json
+title: "My Presentation"
 theme: light  # or leave empty for dark theme
 transition: fade  # Options: fade, slide-left, slide-right, slide-up, slide-down, zoom, none
 
@@ -519,6 +556,65 @@ slides:
       - "https://random.dog/967eae80-8f34-490b-944c-4f6bd4697712.jpeg"
       - "https://random.dog/c1efdc4c-5691-4823-9e66-fd9eeab3ce96.jpg"
 
+  # Code Slide - JavaScript
+  - type: code
+    title: "JavaScript Example"
+    description: "A simple function with syntax highlighting"
+    language: javascript
+    transition: slide-left
+    code: |
+      function greet(name) {
+        const message = \`Hello, \${name}!\`;
+        console.log(message);
+        return message;
+      }
+      
+      greet('World');
+    notes: "Syntax highlighting works automatically!"
+
+  # Code Slide - Python
+  - type: code
+    title: "Python Example"
+    description: "Python syntax is fully supported"
+    language: python
+    transition: fade
+    code: |
+      def factorial(n):
+          if n <= 1:
+              return 1
+          return n * factorial(n - 1)
+      
+      result = factorial(5)
+      print(f"Result: {result}")
+
+  # Code Slide - Bash
+  - type: code
+    title: "Shell Commands"
+    language: bash
+    transition: slide-right
+    code: |
+      #!/bin/bash
+      
+      # Deploy the application
+      npm run build
+      npm test
+      git push origin main
+
+  # Inline code examples
+  - type: default
+    title: "Inline Code"
+    transition: slide-up
+    content:
+      - "You can also use \`inline code\` in text"
+      - "Or code blocks in markdown:"
+      - |
+        \`\`\`typescript
+        interface User {
+          name: string;
+          age: number;
+        }
+        \`\`\`
+
   # Regular content slide
   - type: default
     title: "About This Presentation"
@@ -529,6 +625,7 @@ slides:
         items:
           - "Multiple slide types available"
           - "Simple markdown formatting"
+          - "Syntax highlighting for code"
           - "Easy to customize"
 
   # Two-column slide
