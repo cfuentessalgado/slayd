@@ -1,0 +1,44 @@
+{
+  "name": "slayd",
+  "version": "0.1.0",
+  "description": "Simple YAML-based presentation framework",
+  "main": "builder.js",
+  "bin": {
+    "slayd": "./builder.js"
+  },
+  "files": [
+    "builder.js",
+    "presentation.css",
+    "light.css",
+    "example.yaml",
+    "README.md"
+  ],
+  "scripts": {
+    "build:example": "node builder.js build example.yaml",
+    "build": "node builder.js build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cfuentessalgado/slayd.git"
+  },
+  "homepage": "https://github.com/cfuentessalgado/slayd#readme",
+  "bugs": {
+    "url": "https://github.com/cfuentessalgado/slayd/issues"
+  },
+  "keywords": [
+    "presentation",
+    "slides",
+    "yaml",
+    "html",
+    "cli",
+    "generator"
+  ],
+  "author": "cfuentessalgado",
+  "license": "MIT",
+  "engines": {
+    "node": ">=12.0.0"
+  },
+  "dependencies": {
+    "js-yaml": "^4.1.0"
+  }
+}

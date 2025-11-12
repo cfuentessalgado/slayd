@@ -1,0 +1,201 @@
+/* Light Theme Overrides */
+
+/* Main theme colors */
+body {
+    background: #f8f9fa;
+    color: #1a1a1a;
+}
+
+/* Headings with light colors */
+h1 {
+    color: #5B9FED;
+    background: none;
+    -webkit-text-fill-color: inherit;
+}
+
+h2 {
+    color: #5B9FED;
+    background: none;
+    -webkit-text-fill-color: inherit;
+}
+
+h3 {
+    color: #2E5AAC;
+}
+
+.subtitle {
+    color: #6b7280;
+}
+
+/* Cards and containers */
+.card {
+    background: #ffffff;
+    border-left-color: #5B9FED;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.card:hover {
+    border-left-color: #2E5AAC;
+    box-shadow: 0 10px 40px rgba(91, 159, 237, 0.25);
+}
+
+/* Stats and metrics */
+.stat {
+    color: #5B9FED;
+}
+
+.stat-label {
+    color: #6b7280;
+}
+
+/* List items */
+li:before {
+    color: #5B9FED;
+}
+
+li:hover {
+    color: #5B9FED;
+}
+
+/* Navigation buttons */
+button {
+    background: #ffffff;
+    border-color: #5B9FED;
+    color: #5B9FED;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    backdrop-filter: none;
+}
+
+button:hover:not(:disabled) {
+    background: #5B9FED;
+    color: white;
+    box-shadow: 0 8px 20px rgba(91, 159, 237, 0.3);
+}
+
+/* Slide number indicator */
+.slide-number {
+    color: #6b7280;
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    backdrop-filter: none;
+}
+
+/* Metric boxes */
+.metric-box {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    backdrop-filter: none;
+}
+
+.metric-box:hover {
+    border-color: #5B9FED;
+    box-shadow: 0 10px 40px rgba(91, 159, 237, 0.25);
+}
+
+/* Timeline items */
+.timeline-item {
+    border-left-color: #d1d5db;
+}
+
+.timeline-item:hover {
+    border-left-color: #5B9FED;
+}
+
+.timeline-item:before {
+    background: #5B9FED;
+    box-shadow: 0 0 10px rgba(91, 159, 237, 0.5);
+}
+
+/* Quote styling */
+.quote {
+    color: #6b7280;
+    border-left-color: #d1d5db;
+    background: #f9fafb;
+}
+
+/* Progress bar */
+.progress-bar {
+    background: linear-gradient(90deg, #5B9FED, #2E5AAC);
+}
+
+/* Code blocks */
+pre {
+    background: #1e293b;
+    border: 1px solid #334155;
+}
+
+code {
+    background: #1e293b;
+    color: #60a5fa;
+    border: 1px solid #334155;
+}
+
+pre code {
+    background: none;
+    border: none;
+}
+
+/* Tables */
+table th {
+    background: #dbeafe;
+    border-color: #bfdbfe;
+}
+
+table td {
+    border-color: #e5e7eb;
+}
+
+table tr {
+    background: transparent;
+}
+
+table tr:nth-child(even) {
+    background: #f9fafb;
+}
+
+table tr:hover {
+    background: rgba(91, 159, 237, 0.1);
+}
+
+/* Feature boxes (from dark theme) */
+.feature-box {
+    background: #ffffff;
+    border: 2px solid #e5e7eb;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    backdrop-filter: none;
+}
+
+.feature-box:hover {
+    border-color: #5B9FED;
+    box-shadow: 0 10px 40px rgba(91, 159, 237, 0.25);
+}
+
+/* Highlight text */
+.highlight {
+    background: rgba(91, 159, 237, 0.15);
+    color: #2E5AAC;
+}
+
+/* Diagram backgrounds */
+.diagram {
+    background: #f9fafb;
+    border-color: #e5e7eb;
+}
+
+/* Flow items */
+.flow-item {
+    background: #ffffff;
+    border-color: #5B9FED;
+}
+
+.flow-arrow {
+    color: #5B9FED;
+}
+
+/* Image slides */
+.image-slide img {
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}

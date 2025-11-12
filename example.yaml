@@ -1,0 +1,228 @@
+# Example Presentation using YAML
+# This demonstrates all available slide types and features
+
+title: "My Awesome Presentation"
+lang: es
+theme: light  # or leave empty for dark theme
+
+slides:
+  # Hero slide - perfect for title/intro
+  - type: hero
+    title: "Welcome to My Talk"
+    subtitle: "A presentation about cool things"
+    logo: "🚀"
+    titleSize: "5rem"
+
+  # Image slide - for showing pictures
+  - type: image
+    title: "Our Amazing Team"
+    image: "img/team-photo.png"
+    alt: "Team photo"
+    caption: "The team that makes it all happen"
+
+  # Default slide with mixed content
+  - type: default
+    title: "What We'll Cover"
+    subtitle: "Key topics for today"
+    content:
+      - "First, we'll talk about the basics"
+      - "Then we'll dive into advanced topics"
+      - type: list
+        items:
+          - "Item one with **bold text**"
+          - "Item two with `inline code`"
+          - "Item three"
+
+  # Two-column layout
+  - type: two-column
+    title: "Comparing Approaches"
+    subtitle: "Old vs New"
+    left:
+      title: "Before"
+      content:
+        - type: card
+          title: "The Old Way"
+          content:
+            - "Manual processes"
+            - "Slow feedback loops"
+            - type: list
+              items:
+                - "Lots of manual work"
+                - "Error prone"
+                - "Time consuming"
+    right:
+      title: "After"
+      content:
+        - type: card
+          title: "The New Way"
+          content:
+            - "Automated workflows"
+            - "Fast iterations"
+            - type: list
+              items:
+                - "Automated testing"
+                - "Quick deployment"
+                - "High confidence"
+
+  # Grid layout - 3 columns by default
+  - type: grid
+    title: "Our Features"
+    columns: 3
+    items:
+      - type: feature
+        icon: "🎯"
+        title: "Accurate"
+        content: "Precise results every time"
+      - type: feature
+        icon: "⚡"
+        title: "Fast"
+        content: "Lightning quick performance"
+      - type: feature
+        icon: "🔒"
+        title: "Secure"
+        content: "Bank-level security"
+
+  # Metric grid - for showing stats
+  - type: grid
+    title: "By The Numbers"
+    columns: 3
+    items:
+      - type: metric
+        stat: "99.9%"
+        label: "Uptime"
+      - type: metric
+        stat: "10M+"
+        label: "Users"
+      - type: metric
+        stat: "<100ms"
+        label: "Response Time"
+
+  # Code slide
+  - type: code
+    title: "Quick Example"
+    description: "Here's how easy it is to use"
+    code: |
+      function hello() {
+        console.log('Hello World!');
+      }
+      
+      hello();
+    notes: "This is a simple example showing the **basic syntax**"
+
+  # Timeline slide
+  - type: timeline
+    title: "Our Journey"
+    subtitle: "Key milestones"
+    items:
+      - period: "Q1 2025"
+        title: "Project Launch"
+        description: "Started with a simple idea"
+        items:
+          - "Initial prototype"
+          - "First user testing"
+      - period: "Q2 2025"
+        title: "Growth Phase"
+        description: "Rapid expansion"
+        items:
+          - "10x user growth"
+          - "New features"
+      - period: "Q3 2025"
+        title: "Scale"
+        description: "Enterprise ready"
+
+  # Table slide
+  - type: table
+    title: "Performance Comparison"
+    headers:
+      - "Operation"
+      - "Before"
+      - "After"
+      - "Improvement"
+    rows:
+      - ["Page Load", "3.2s", "0.8s", "4x faster"]
+      - ["API Response", "500ms", "50ms", "10x faster"]
+      - ["Database Query", "2.1s", "0.3s", "7x faster"]
+
+  # Mixed content slide with cards and quotes
+  - type: default
+    title: "What People Say"
+    content:
+      - type: quote
+        text: "This is the best tool we've ever used. It changed everything for our team."
+      - type: card
+        title: "Key Benefits"
+        content:
+          - type: list
+            items:
+              - "Easy to use"
+              - "Powerful features"
+              - "Great support"
+
+  # Flow diagram example
+  - type: flow
+    title: "How It Works"
+    subtitle: "Simple 3-step process"
+    flows:
+      - items:
+          - title: "Input"
+            subtitle: "YAML file"
+          - type: arrow
+          - title: "Process"
+            subtitle: "Builder compiles"
+          - type: arrow
+          - title: "Output"
+            subtitle: "HTML presentation"
+    content:
+      - type: callout
+        content:
+          - "**That's it!** No complex build tools needed."
+
+  # Colored lists example
+  - type: two-column
+    title: "Problems & Solutions"
+    left:
+      title: "Problems"
+      content:
+        - type: list
+          style: red
+          items:
+            - "Hard to maintain HTML"
+            - "Copy-paste errors"
+            - "Slow iteration"
+    right:
+      title: "Solutions"
+      content:
+        - type: list
+          style: green
+          items:
+            - "Clean YAML syntax"
+            - "Reusable components"
+            - "Fast development"
+
+  # Multiple cards in columns
+  - type: two-column
+    title: "Advanced Features"
+    left:
+      cards:
+        - title: "Feature 1"
+          style: "margin-bottom: 1rem;"
+          content:
+            - "Stack multiple cards"
+        - title: "Feature 2"
+          content:
+            - "In each column"
+    right:
+      cards:
+        - title: "Feature 3"
+          style: "margin-bottom: 1rem;"
+          content:
+            - "With custom styling"
+        - title: "Feature 4"
+          content:
+            - "Complete flexibility"
+
+  # Final hero slide
+  - type: hero
+    title: "Thank You!"
+    subtitle: "Questions?"
+    logo: "👋"
