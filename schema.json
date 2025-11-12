@@ -1,0 +1,400 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Slayd Presentation",
+  "description": "Schema for Slayd YAML presentations",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string",
+      "description": "Presentation title"
+    },
+    "lang": {
+      "type": "string",
+      "description": "Language code (e.g., 'en', 'es')",
+      "default": "es"
+    },
+    "theme": {
+      "type": "string",
+      "enum": ["light", "dark", ""],
+      "description": "Presentation theme"
+    },
+    "transition": {
+      "type": "string",
+      "enum": ["fade", "slide-left", "slide-right", "slide-up", "slide-down", "zoom", "none"],
+      "description": "Global transition effect",
+      "default": "fade"
+    },
+    "codeTheme": {
+      "type": "string",
+      "description": "Prism theme for code highlighting",
+      "default": "prism-one-dark",
+      "examples": ["prism-twilight", "prism-okaidia", "prism-tomorrow", "prism-solarizedlight", "prism-one-dark"]
+    },
+    "slides": {
+      "type": "array",
+      "description": "Array of slides",
+      "items": {
+        "oneOf": [
+          { "$ref": "#/definitions/heroSlide" },
+          { "$ref": "#/definitions/imageSlide" },
+          { "$ref": "#/definitions/defaultSlide" },
+          { "$ref": "#/definitions/twoColumnSlide" },
+          { "$ref": "#/definitions/gridSlide" },
+          { "$ref": "#/definitions/codeSlide" },
+          { "$ref": "#/definitions/timelineSlide" },
+          { "$ref": "#/definitions/tableSlide" },
+          { "$ref": "#/definitions/flowSlide" }
+        ]
+      }
+    }
+  },
+  "required": ["title", "slides"],
+  "definitions": {
+    "transition": {
+      "type": "string",
+      "enum": ["fade", "slide-left", "slide-right", "slide-up", "slide-down", "zoom", "none"]
+    },
+    "contentItem": {
+      "oneOf": [
+        { "type": "string" },
+        { "$ref": "#/definitions/listContent" },
+        { "$ref": "#/definitions/cardContent" },
+        { "$ref": "#/definitions/quoteContent" },
+        { "$ref": "#/definitions/calloutContent" },
+        { "$ref": "#/definitions/codeContent" }
+      ]
+    },
+    "listContent": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "list"
+        },
+        "style": {
+          "type": "string",
+          "enum": ["red", "green", "blue", "yellow", "gray"]
+        },
+        "items": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      },
+      "required": ["type", "items"]
+    },
+    "cardContent": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "card"
+        },
+        "title": { "type": "string" },
+        "style": { "type": "string" },
+        "content": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/contentItem" }
+        }
+      },
+      "required": ["type"]
+    },
+    "quoteContent": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "quote"
+        },
+        "text": { "type": "string" }
+      },
+      "required": ["type", "text"]
+    },
+    "calloutContent": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "callout"
+        },
+        "style": { "type": "string" },
+        "content": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/contentItem" }
+        }
+      },
+      "required": ["type"]
+    },
+    "codeContent": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "code"
+        },
+        "language": {
+          "type": "string",
+          "enum": ["javascript", "typescript", "python", "bash", "json", "yaml", "css", "go", "rust", "java", "html"]
+        },
+        "code": { "type": "string" }
+      },
+      "required": ["type", "code"]
+    },
+    "heroSlide": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "hero"
+        },
+        "title": { "type": "string" },
+        "subtitle": { "type": "string" },
+        "logo": { "type": "string" },
+        "titleSize": { "type": "string" },
+        "transition": { "$ref": "#/definitions/transition" }
+      },
+      "required": ["type", "title"]
+    },
+    "imageSlide": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "image"
+        },
+        "preset": {
+          "type": "string",
+          "enum": ["center", "fullscreen", "split", "icon", "grid"],
+          "default": "center"
+        },
+        "title": { "type": "string" },
+        "image": { "type": "string" },
+        "images": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "alt": { "type": "string" },
+        "caption": { "type": "string" },
+        "position": {
+          "type": "string",
+          "enum": ["left", "right"]
+        },
+        "content": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/contentItem" }
+        },
+        "transition": { "$ref": "#/definitions/transition" }
+      },
+      "required": ["type"]
+    },
+    "defaultSlide": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "default"
+        },
+        "title": { "type": "string" },
+        "subtitle": { "type": "string" },
+        "content": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/contentItem" }
+        },
+        "transition": { "$ref": "#/definitions/transition" }
+      },
+      "required": ["type"]
+    },
+    "columnContent": {
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "content": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/contentItem" }
+        },
+        "cards": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/cardContent" }
+        }
+      }
+    },
+    "twoColumnSlide": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "two-column"
+        },
+        "title": { "type": "string" },
+        "subtitle": { "type": "string" },
+        "left": { "$ref": "#/definitions/columnContent" },
+        "right": { "$ref": "#/definitions/columnContent" },
+        "content": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/contentItem" }
+        },
+        "transition": { "$ref": "#/definitions/transition" }
+      },
+      "required": ["type"]
+    },
+    "gridItem": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "type": { "const": "feature" },
+            "icon": { "type": "string" },
+            "title": { "type": "string" },
+            "content": { "type": "string" }
+          },
+          "required": ["type"]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": { "const": "metric" },
+            "stat": { "type": "string" },
+            "label": { "type": "string" }
+          },
+          "required": ["type", "stat"]
+        }
+      ]
+    },
+    "gridSlide": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "grid"
+        },
+        "title": { "type": "string" },
+        "subtitle": { "type": "string" },
+        "columns": {
+          "type": "number",
+          "default": 3,
+          "minimum": 1,
+          "maximum": 4
+        },
+        "items": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/gridItem" }
+        },
+        "transition": { "$ref": "#/definitions/transition" }
+      },
+      "required": ["type", "items"]
+    },
+    "codeSlide": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "code"
+        },
+        "title": { "type": "string" },
+        "subtitle": { "type": "string" },
+        "description": { "type": "string" },
+        "language": {
+          "type": "string",
+          "enum": ["javascript", "typescript", "python", "bash", "json", "yaml", "css", "go", "rust", "java", "html"],
+          "default": "javascript"
+        },
+        "code": { "type": "string" },
+        "notes": { "type": "string" },
+        "transition": { "$ref": "#/definitions/transition" }
+      },
+      "required": ["type", "code"]
+    },
+    "timelineItem": {
+      "type": "object",
+      "properties": {
+        "period": { "type": "string" },
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "items": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      },
+      "required": ["period", "title"]
+    },
+    "timelineSlide": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "timeline"
+        },
+        "title": { "type": "string" },
+        "subtitle": { "type": "string" },
+        "items": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/timelineItem" }
+        },
+        "transition": { "$ref": "#/definitions/transition" }
+      },
+      "required": ["type", "items"]
+    },
+    "tableSlide": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "table"
+        },
+        "title": { "type": "string" },
+        "subtitle": { "type": "string" },
+        "headers": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "rows": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        },
+        "transition": { "$ref": "#/definitions/transition" }
+      },
+      "required": ["type", "headers", "rows"]
+    },
+    "flowItem": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "type": { "const": "arrow" },
+            "text": { "type": "string" }
+          },
+          "required": ["type"]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "title": { "type": "string" },
+            "subtitle": { "type": "string" },
+            "content": { "type": "string" }
+          }
+        }
+      ]
+    },
+    "flow": {
+      "type": "object",
+      "properties": {
+        "items": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/flowItem" }
+        },
+        "style": { "type": "string" }
+      },
+      "required": ["items"]
+    },
+    "flowSlide": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "flow"
+        },
+        "title": { "type": "string" },
+        "subtitle": { "type": "string" },
+        "description": { "type": "string" },
+        "flows": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/flow" }
+        },
+        "content": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/contentItem" }
+        },
+        "transition": { "$ref": "#/definitions/transition" }
+      },
+      "required": ["type"]
+    }
+  }
+}
